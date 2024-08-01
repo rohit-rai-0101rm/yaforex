@@ -96,6 +96,7 @@ export interface NewPropertyRequestBody {
         distance: number;
     }[];
     listedBy: "admin" | "broker" | "owner" | "agent" | "builder";
+    isLuxuryProperty?: boolean;
 }
 
 export interface UpdatePropertyRequestBody {

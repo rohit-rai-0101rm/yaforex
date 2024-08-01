@@ -12,7 +12,7 @@ export const newProperty = TryCatch(
 
 
     async (req: Request<{}, {}, NewPropertyRequestBody>, res: Response, next: NextFunction) => {
-        let imagesFromRequest = [];
+        let imagesFromRequest: any[] = [];
         const {
             title, description, propertyType, category, status, price, address, size,
             bedrooms, bathrooms, floors, yearBuilt, amenities, ownerDetails,
@@ -116,8 +116,11 @@ export const getAllProperties = TryCatch(async (req: Request, res: Response, nex
     // Filter based on the populated `listedBy.role` field
     if (req.query.role) {
 
-        console.log(object)
-        properties = properties.filter(property => property.listedBy.role == req.query.role);
+
+
+        properties = properties.filter(property =>
+            (property.listedBy as any).role === req.query.role // Use `any` type assertion here
+        );
 
         console.log("properties", properties)
     }

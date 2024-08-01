@@ -2,6 +2,7 @@ import mongoose, { Schema, Document, model } from 'mongoose';
 
 export interface IReview extends Document {
     user: mongoose.Schema.Types.ObjectId;
+    _id: mongoose.Types.ObjectId;
     rating: number;
     comment: string;
     createdAt: Date;
