@@ -109,6 +109,7 @@ export const getAllProperties = TryCatch(async (req: Request, res: Response, nex
         .filter()
         .searchByCity()
         .searchByState()
+        .sortByLatest()
         .pagination(resultPerPage);
 
     let properties: IProperty[] = await apiFeatures.query.populate('listedBy', 'name email role').exec();

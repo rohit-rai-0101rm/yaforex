@@ -85,7 +85,10 @@ export default class ApiFeatures<T extends Document> {
         }
         return this;
     }
-
+    sortByLatest(): this {
+        this.query = this.query.sort({ createdAt: -1 }); // Sort by createdAt in descending order
+        return this;
+    }
 
     pagination(resultPerPage: number): this {
         const currentPage = Number(this.queryStr.page) || 1;
