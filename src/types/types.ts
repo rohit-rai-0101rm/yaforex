@@ -164,3 +164,21 @@ export interface QueryStr {
     limit?: string;
     [key: string]: any;
 }
+
+
+
+//blog types interface
+
+
+export interface NewBlogPostRequestBody {
+    title: string;
+
+    content: string;
+
+    author: {
+        name: string;
+        email: string;
+    };
+
+    publishedAt?: Date;
+}
