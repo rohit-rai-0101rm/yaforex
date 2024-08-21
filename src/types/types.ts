@@ -179,6 +179,6 @@ export interface NewBlogPostRequestBody {
         name: string;
         email: string;
     };
-
+    images: { public_id: string; url: string; }[];
     publishedAt?: Date;
 }

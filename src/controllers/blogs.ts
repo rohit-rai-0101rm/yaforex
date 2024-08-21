@@ -4,9 +4,12 @@ import { Request, Response, NextFunction } from 'express';
 import ErrorHandler from "../utils/utility-class.js";
 import { BlogPost, IBlogPost } from "../models/blogs.js";
 import sanitizeHtml from 'sanitize-html';  // To sanitize HTML input
+import * as cloudinary from "cloudinary";
 export const newBlogPost = TryCatch(
     async (req: Request<{}, {}, NewBlogPostRequestBody>, res: Response, next: NextFunction) => {
-        const { title, content, author, publishedAt } = req.body;
+
+        let imagesFromRequest: any[] = [];
+        const { title, content, author, publishedAt, images } = req.body;
 
         // Validate required fields
         if (!title || !content || !author || !author.name || !author.email) {
@@ -29,12 +32,25 @@ export const newBlogPost = TryCatch(
         }
 
         // Check if the author email is unique
-        const existingAuthor = await BlogPost.findOne({ 'author.email': author.email });
-        if (existingAuthor) {
-            return next(new ErrorHandler("An author with this email already exists", 400));
-        }
 
         // Create new blog post
+        if (typeof req.body.images === "string") {
+            imagesFromRequest.push(req.body.images);
+        } else {
+            imagesFromRequest = req.body.images;
+        }
+
+        const imagesLinks = [];
+        for (let i = 0; i < images.length; i++) {
+            const result = await cloudinary.v2.uploader.upload(imagesFromRequest[i], {
+                folder: "products",
+            });
+
+            imagesLinks.push({
+                public_id: result.public_id,
+                url: result.secure_url,
+            });
+        }
         const blogPost = await BlogPost.create({
             title,
             content: sanitizedContent,  // Save sanitized content

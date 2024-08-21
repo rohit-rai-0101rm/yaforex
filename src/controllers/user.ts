@@ -56,7 +56,7 @@ export const loginUser = TryCatch(
         if (!isPasswordMatched) {
             return next(new ErrorHandler("Invalid email or password", 401));
         }
-
+        console.log("loggedInUser", user)
         sendToken(user, 200, res);
     }
 );

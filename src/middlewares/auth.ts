@@ -8,7 +8,9 @@ import { AuthRequest } from "../types/types.js";
 export const authorizeRoles = (...roles: string[]) => {
     return (req: AuthRequest, res: Response, next: NextFunction) => {
         if (!req.user || !roles.includes(req.user.role)) {
-            return res.status(403).json({ message: "You are not allowed to perform this action" });
+
+            console.log("role of the user", req.user)
+            return res.status(403).json({ message: "You are not allowed to perform this actiossss" });
         }
         next();
     };
