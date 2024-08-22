@@ -51,7 +51,7 @@ export const newNewsPost = TryCatch(
                 url: result.secure_url,
             });
 
-            console.log("imageLinks", imagesLinks)
+
         }
         const blogPost = await NewsPost.create({
             title,
