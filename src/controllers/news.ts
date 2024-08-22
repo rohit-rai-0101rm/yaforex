@@ -2,10 +2,10 @@ import { TryCatch } from "../middlewares/error.js";
 import { NewBlogPostRequestBody } from "../types/types.js";
 import { Request, Response, NextFunction } from 'express';
 import ErrorHandler from "../utils/utility-class.js";
-import { BlogPost, IBlogPost } from "../models/blogs.js";
+import { NewsPost, INewsPost } from "../models/news.js";
 import sanitizeHtml from 'sanitize-html';  // To sanitize HTML input
 import * as cloudinary from "cloudinary";
-export const newBlogPost = TryCatch(
+export const newNewsPost = TryCatch(
     async (req: Request<{}, {}, NewBlogPostRequestBody>, res: Response, next: NextFunction) => {
 
         let imagesFromRequest: any[] = [];
@@ -26,9 +26,9 @@ export const newBlogPost = TryCatch(
         });
 
         // Check if the blog title already exists (unique constraint)
-        const existingBlogPost = await BlogPost.findOne({ title });
+        const existingBlogPost = await NewsPost.findOne({ title });
         if (existingBlogPost) {
-            return next(new ErrorHandler("A blog post with this title already exists", 400));
+            return next(new ErrorHandler("A News post with this title already exists", 400));
         }
 
         // Check if the author email is unique
@@ -43,7 +43,7 @@ export const newBlogPost = TryCatch(
         const imagesLinks = [];
         for (let i = 0; i < images.length; i++) {
             const result = await cloudinary.v2.uploader.upload(imagesFromRequest[i], {
-                folder: "blogs",
+                folder: "news",
             });
 
             imagesLinks.push({
@@ -53,7 +53,7 @@ export const newBlogPost = TryCatch(
 
             console.log("imageLinks", imagesLinks)
         }
-        const blogPost = await BlogPost.create({
+        const blogPost = await NewsPost.create({
             title,
             content: sanitizedContent,  // Save sanitized content
             author,
@@ -62,13 +62,13 @@ export const newBlogPost = TryCatch(
         });
 
         // Prepare response object
-        const responseBlogPost: IBlogPost = {
+        const responseBlogPost: INewsPost = {
             ...blogPost.toJSON(),
         };
 
         return res.status(201).json({
             success: true,
-            message: `Blog post '${blogPost.title}' created successfully`,
+            message: `News post '${blogPost.title}' created successfully`,
             blogPost: responseBlogPost,
         });
     }

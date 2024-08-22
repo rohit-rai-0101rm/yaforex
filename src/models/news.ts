@@ -10,7 +10,7 @@ interface IImage extends Document {
 }
 
 
-export interface IBlogPost extends Document {
+export interface INewsPost extends Document {
     title: string;
 
     content: string;
@@ -24,7 +24,7 @@ export interface IBlogPost extends Document {
     publishedAt?: Date;
 }
 
-const blogPostSchema: Schema = new Schema(
+const NewsPostSchema: Schema = new Schema(
     {
         title: {
             type: String,
@@ -62,4 +62,4 @@ const blogPostSchema: Schema = new Schema(
     }
 );
 
-export const BlogPost = model<IBlogPost>("BlogPost", blogPostSchema);
+export const NewsPost = model<INewsPost>("NewsPost", NewsPostSchema);
