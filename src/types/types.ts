@@ -182,3 +182,11 @@ export interface NewBlogPostRequestBody {
     images: { public_id: string; url: string; }[];
     publishedAt?: Date;
 }
+
+export interface NewCareerPostRequestBody {
+    jobTitle: string; // Title of the job posting
+    location: string; // Location of the job
+    experience: string; // Experience required for the job
+    content: string; // Job description or content
+
+}
