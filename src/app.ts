@@ -13,6 +13,7 @@ import newsRoutes from "./routes/news.js"
 import eventsRoutes from "./routes/events.js"
 import guidesRoutes from "./routes/guide.js"
 import careerRoutes from "./routes/career.js"
+import tipsRoutes from "./routes/tips.js"
 import { connectDB } from './utils/features.js';
 import { errorMiddleWare } from './middlewares/error.js';
 
@@ -52,7 +53,7 @@ app.use("/api/v1/blog", blogRoutes)
 app.use("/api/v1/news", newsRoutes)
 app.use("/api/v1/events", eventsRoutes)
 app.use("/api/v1/guides", guidesRoutes)
-app.use("/api/v1/carrer", careerRoutes)
+app.use("/api/v1/tips", tipsRoutes)
 app.use(errorMiddleWare)
 app.listen(port, () => {
     console.log(`Server is working on http://localhost:${port}`)
