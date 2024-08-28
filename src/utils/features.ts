@@ -461,3 +461,58 @@ export class GuideApiFeatures<T extends Document> {
         return this;
     }
 }
+
+
+//News Api Features
+
+
+export class NewsApiFeatures<T extends Document> {
+    query: Query<T[], T>;
+    queryStr: QueryStr;
+
+    constructor(query: Query<T[], T>, queryStr: QueryStr) {
+        this.query = query;
+        this.queryStr = queryStr;
+    }
+
+    search(): this {
+        const keyword = this.queryStr.keyword
+            ? {
+                title: {
+                    $regex: this.queryStr.keyword,
+                    $options: 'i',
+                },
+            }
+            : {};
+
+        this.query = this.query.find({ ...keyword });
+        return this;
+    }
+
+    filter(): this {
+        const queryCopy = { ...this.queryStr };
+        // Removing some fields for filtering
+        const removeFields = ['keyword', 'page', 'limit'];
+
+        removeFields.forEach((key) => delete queryCopy[key]);
+
+        let queryStr = JSON.stringify(queryCopy);
+        queryStr = queryStr.replace(/\b(gt|gte|lt|lte)\b/g, (key) => `$${key}`);
+
+        this.query = this.query.find(JSON.parse(queryStr));
+        return this;
+    }
+
+    sortByLatest(): this {
+        this.query = this.query.sort({ publishedAt: -1 }); // Sort by publishedAt in descending order
+        return this;
+    }
+
+    pagination(resultPerPage: number): this {
+        const currentPage = Number(this.queryStr.page) || 1;
+        const skip = resultPerPage * (currentPage - 1);
+
+        this.query = this.query.limit(resultPerPage).skip(skip);
+        return this;
+    }
+}

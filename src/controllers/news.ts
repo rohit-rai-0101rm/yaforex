@@ -5,6 +5,7 @@ import ErrorHandler from "../utils/utility-class.js";
 import { NewsPost, INewsPost } from "../models/news.js";
 import sanitizeHtml from 'sanitize-html';  // To sanitize HTML input
 import * as cloudinary from "cloudinary";
+import { NewsApiFeatures } from "../utils/features.js";
 export const newNewsPost = TryCatch(
     async (req: Request<{}, {}, NewBlogPostRequestBody>, res: Response, next: NextFunction) => {
 
@@ -77,18 +78,24 @@ export const newNewsPost = TryCatch(
 
 
 
-
 export const getAllNews = TryCatch(async (req: Request, res: Response, next: NextFunction) => {
-    // Fetch all tips from the database
-    const news = await NewsPost.find();
+    const resultPerPage = 20;
+    const apiFeatures = new NewsApiFeatures(NewsPost.find(), req.query)
+        .search()
+        .filter()
+        .sortByLatest()
+        .pagination(resultPerPage);
 
-    if (!news || news.length === 0) {
-        return next(new ErrorHandler('No News found', 404));
+    const newsPosts = await apiFeatures.query.exec();
+
+    if (!newsPosts || newsPosts.length === 0) {
+        return next(new ErrorHandler('No news found', 404));
     }
 
-    // Send the list of tips to the client
-    return res.status(200).json({
+    res.status(200).json({
         success: true,
-        news,
+        count: newsPosts.length,
+        newsPosts,
+        resultPerPage
     });
 });
