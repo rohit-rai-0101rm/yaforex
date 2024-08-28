@@ -4,6 +4,7 @@ import { Request, Response, NextFunction } from 'express';
 import ErrorHandler from "../utils/utility-class.js";
 import sanitizeHtml from 'sanitize-html';
 import { ITip, Tip } from "../models/Tips.js";
+import { TipApiFeatures } from "../utils/features.js";
 
 
 export const newTip = TryCatch(
@@ -58,18 +59,25 @@ export const newTip = TryCatch(
 );
 
 
-
 export const getAllTips = TryCatch(async (req: Request, res: Response, next: NextFunction) => {
-    // Fetch all tips from the database
-    const tips = await Tip.find();
+    const resultPerPage = 20;
+    const apiFeatures = new TipApiFeatures(Tip.find(), req.query)
+        .search()
+        .filter()
+        .searchByType() // Add search by type if needed
+        .sortByLatest()
+        .pagination(resultPerPage);
+
+    const tips = await apiFeatures.query.exec();
 
     if (!tips || tips.length === 0) {
         return next(new ErrorHandler('No tips found', 404));
     }
 
-    // Send the list of tips to the client
-    return res.status(200).json({
+    res.status(200).json({
         success: true,
+        count: tips.length,
         tips,
+        resultPerPage
     });
 });
