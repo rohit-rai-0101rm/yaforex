@@ -6,6 +6,7 @@ import ErrorHandler from "../utils/utility-class.js";
 import sanitizeHtml from 'sanitize-html';  // To sanitize HTML input
 import * as cloudinary from "cloudinary";
 import { EventPost, IEventPost } from "../models/events.js";
+import { EventApiFeatures } from "../utils/features.js";
 export const newEventPost = TryCatch(
     async (req: Request<{}, {}, NewBlogPostRequestBody>, res: Response, next: NextFunction) => {
 
@@ -81,16 +82,23 @@ export const newEventPost = TryCatch(
 
 
 export const getAllEvents = TryCatch(async (req: Request, res: Response, next: NextFunction) => {
-    // Fetch all tips from the database
-    const eventposts = await EventPost.find();
+    const resultPerPage = 20;
+    const apiFeatures = new EventApiFeatures(EventPost.find(), req.query)
+        .search()
+        .filter()
+        .sortByLatest()
+        .pagination(resultPerPage);
+
+    const eventposts = await apiFeatures.query.exec();
 
     if (!eventposts || eventposts.length === 0) {
-        return next(new ErrorHandler('No Events found', 404));
+        return next(new ErrorHandler('No events found', 404));
     }
 
-    // Send the list of tips to the client
-    return res.status(200).json({
+    res.status(200).json({
         success: true,
+        count: eventposts.length,
         eventposts,
+        resultPerPage
     });
 });

@@ -7,6 +7,7 @@ import sanitizeHtml from 'sanitize-html';  // To sanitize HTML input
 import * as cloudinary from "cloudinary";
 import { EventPost, IEventPost } from "../models/events.js";
 import { GuidePost } from "../models/guide.js";
+import { GuideApiFeatures } from "../utils/features.js";
 export const newGuidePost = TryCatch(
     async (req: Request<{}, {}, NewBlogPostRequestBody>, res: Response, next: NextFunction) => {
 
@@ -80,16 +81,23 @@ export const newGuidePost = TryCatch(
 
 
 export const getAllGuides = TryCatch(async (req: Request, res: Response, next: NextFunction) => {
-    // Fetch all tips from the database
-    const guides = await GuidePost.find();
+    const resultPerPage = 20;
+    const apiFeatures = new GuideApiFeatures(GuidePost.find(), req.query)
+        .search()
+        .filter()
+        .sortByLatest()
+        .pagination(resultPerPage);
+
+    const guides = await apiFeatures.query.exec();
 
     if (!guides || guides.length === 0) {
-        return next(new ErrorHandler('No Guide found', 404));
+        return next(new ErrorHandler('No guides found', 404));
     }
 
-    // Send the list of tips to the client
-    return res.status(200).json({
+    res.status(200).json({
         success: true,
+        count: guides.length,
         guides,
+        resultPerPage
     });
 });
