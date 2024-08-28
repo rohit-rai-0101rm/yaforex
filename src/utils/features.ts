@@ -85,6 +85,20 @@ export default class ApiFeatures<T extends Document> {
         }
         return this;
     }
+
+
+    searchByJobTitle(): this {
+        const jobTitle = this.queryStr.role as string;
+        if (jobTitle) {
+            this.query = this.query.find({
+                'jobTitle': {
+                    $regex: jobTitle,
+                    $options: 'i'
+                }
+            });
+        }
+        return this;
+    }
     sortByLatest(): this {
         this.query = this.query.sort({ createdAt: -1 }); // Sort by createdAt in descending order
         return this;

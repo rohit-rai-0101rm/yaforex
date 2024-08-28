@@ -6,6 +6,7 @@ import { CareerPost, ICareerPost } from "../models/career.js";
 import sanitizeHtml from 'sanitize-html';  // To sanitize HTML input
 import * as cloudinary from "cloudinary";
 import { NewCareerPostRequestBody } from "../types/types.js";
+import ApiFeatures from "../utils/features.js";
 
 export const newCareerPost = TryCatch(
     async (req: Request<{}, {}, NewCareerPostRequestBody>, res: Response, next: NextFunction) => {
@@ -64,6 +65,15 @@ export const newCareerPost = TryCatch(
 
 export const getAllCareers = TryCatch(async (req: Request, res: Response, next: NextFunction) => {
     // Fetch all tips from the database
+    const resultPerPage = 20;
+    const apiFeatures = new ApiFeatures(CareerPost.find(), req.query)
+        .search()
+        .filter()
+        .searchByCity()
+        .searchByState()
+        .sortByLatest()
+        .pagination(resultPerPage);
+
     const careerPosts = await CareerPost.find();
 
     if (!careerPosts || careerPosts.length === 0) {
