@@ -58,3 +58,21 @@ export const newCareerPost = TryCatch(
         });
     }
 );
+
+
+
+
+export const getAllCareers = TryCatch(async (req: Request, res: Response, next: NextFunction) => {
+    // Fetch all tips from the database
+    const careerPosts = await CareerPost.find();
+
+    if (!careerPosts || careerPosts.length === 0) {
+        return next(new ErrorHandler('No Career posts found', 404));
+    }
+
+    // Send the list of tips to the client
+    return res.status(200).json({
+        success: true,
+        careerPosts,
+    });
+});

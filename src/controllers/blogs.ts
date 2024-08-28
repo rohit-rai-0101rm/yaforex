@@ -73,3 +73,20 @@ export const newBlogPost = TryCatch(
         });
     }
 );
+
+
+
+export const getAllBlogs = TryCatch(async (req: Request, res: Response, next: NextFunction) => {
+    // Fetch all tips from the database
+    const blogPosts = await BlogPost.find();
+
+    if (!blogPosts || blogPosts.length === 0) {
+        return next(new ErrorHandler('No Blogs posts found', 404));
+    }
+
+    // Send the list of tips to the client
+    return res.status(200).json({
+        success: true,
+        blogPosts,
+    });
+});
