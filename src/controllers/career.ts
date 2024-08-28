@@ -6,7 +6,7 @@ import { CareerPost, ICareerPost } from "../models/career.js";
 import sanitizeHtml from 'sanitize-html';  // To sanitize HTML input
 import * as cloudinary from "cloudinary";
 import { NewCareerPostRequestBody } from "../types/types.js";
-import ApiFeatures from "../utils/features.js";
+import { CareerApiFeatures } from "../utils/features.js";
 
 export const newCareerPost = TryCatch(
     async (req: Request<{}, {}, NewCareerPostRequestBody>, res: Response, next: NextFunction) => {
@@ -64,25 +64,22 @@ export const newCareerPost = TryCatch(
 
 
 export const getAllCareers = TryCatch(async (req: Request, res: Response, next: NextFunction) => {
-    // Fetch all tips from the database
     const resultPerPage = 20;
-    const apiFeatures = new ApiFeatures(CareerPost.find(), req.query)
+    const apiFeatures = new CareerApiFeatures(CareerPost.find(), req.query)
         .search()
         .filter()
-        .searchByCity()
-        .searchByState()
+        .searchByLocation()
+        .searchByExperience()
+        .searchByType()  // Added search by type
         .sortByLatest()
         .pagination(resultPerPage);
 
-    const careerPosts = await CareerPost.find();
+    const careers = await apiFeatures.query.exec();
 
-    if (!careerPosts || careerPosts.length === 0) {
-        return next(new ErrorHandler('No Career posts found', 404));
-    }
-
-    // Send the list of tips to the client
-    return res.status(200).json({
+    res.status(200).json({
         success: true,
-        careerPosts,
+        count: careers.length,
+        careers,
+        resultPerPage
     });
 });

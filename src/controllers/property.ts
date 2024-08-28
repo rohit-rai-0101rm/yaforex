@@ -7,7 +7,8 @@ import { NewPropertyRequestBody, Params, UpdatePropertyRequestBody } from "../ty
 import { User } from "../models/user.js";
 import * as cloudinary from "cloudinary";
 import mongoose from 'mongoose';
-import ApiFeatures from "../utils/features.js";
+import { ApiFeatures } from "../utils/features.js";
+
 export const newProperty = TryCatch(
 
 

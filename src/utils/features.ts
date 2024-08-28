@@ -9,7 +9,7 @@ export const connectDB = (uri: string) => {
 
 
 
-export default class ApiFeatures<T extends Document> {
+export class ApiFeatures<T extends Document> {
     query: Query<T[], T>;
     queryStr: QueryStr;
 
@@ -113,3 +113,98 @@ export default class ApiFeatures<T extends Document> {
     }
 }
 
+
+
+
+//Career api Features
+
+export class CareerApiFeatures<T extends Document> {
+    query: Query<T[], T>;
+    queryStr: QueryStr;
+
+    constructor(query: Query<T[], T>, queryStr: QueryStr) {
+        this.query = query;
+        this.queryStr = queryStr;
+    }
+
+    search(): this {
+        const keyword = this.queryStr.keyword
+            ? {
+                jobTitle: {
+                    $regex: this.queryStr.keyword,
+                    $options: 'i',
+                },
+            }
+            : {};
+
+        this.query = this.query.find({ ...keyword });
+        return this;
+    }
+
+    filter(): this {
+        const queryCopy = { ...this.queryStr };
+        // Removing some fields for category
+        const removeFields = ['keyword', 'page', 'limit'];
+
+        removeFields.forEach((key) => delete queryCopy[key]);
+
+        // Filter for experience and other fields if needed
+        let queryStr = JSON.stringify(queryCopy);
+        queryStr = queryStr.replace(/\b(gt|gte|lt|lte)\b/g, (key) => `$${key}`);
+
+        this.query = this.query.find(JSON.parse(queryStr));
+        return this;
+    }
+
+    searchByLocation(): this {
+        const location = this.queryStr.location as string;
+        if (location) {
+            this.query = this.query.find({
+                location: {
+                    $regex: location,
+                    $options: 'i'
+                }
+            });
+        }
+        return this;
+    }
+
+    searchByExperience(): this {
+        const experience = this.queryStr.experience as string;
+        if (experience) {
+            this.query = this.query.find({
+                experience: {
+                    $regex: experience,
+                    $options: 'i'
+                }
+            });
+        }
+        return this;
+    }
+
+    searchByType(): this {
+        const type = this.queryStr.type as string;
+        if (type) {
+            this.query = this.query.find({
+                type: {
+                    $regex: type,
+                    $options: 'i'
+                }
+            });
+        }
+        return this;
+    }
+
+    sortByLatest(): this {
+        this.query = this.query.sort({ createdAt: -1 }); // Sort by createdAt in descending order
+        return this;
+    }
+
+    pagination(resultPerPage: number): this {
+        const currentPage = Number(this.queryStr.page) || 1;
+        const skip = resultPerPage * (currentPage - 1);
+
+        this.query = this.query.limit(resultPerPage).skip(skip);
+        return this;
+    }
+}
