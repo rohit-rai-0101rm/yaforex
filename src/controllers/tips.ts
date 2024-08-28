@@ -56,3 +56,20 @@ export const newTip = TryCatch(
         });
     }
 );
+
+
+
+export const getAllTips = TryCatch(async (req: Request, res: Response, next: NextFunction) => {
+    // Fetch all tips from the database
+    const tips = await Tip.find();
+
+    if (!tips || tips.length === 0) {
+        return next(new ErrorHandler('No tips found', 404));
+    }
+
+    // Send the list of tips to the client
+    return res.status(200).json({
+        success: true,
+        tips,
+    });
+});
