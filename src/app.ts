@@ -54,6 +54,7 @@ app.use("/api/v1/news", newsRoutes)
 app.use("/api/v1/events", eventsRoutes)
 app.use("/api/v1/guides", guidesRoutes)
 app.use("/api/v1/tips", tipsRoutes)
+app.use("/api/v1/career", careerRoutes)
 app.use(errorMiddleWare)
 app.listen(port, () => {
     console.log(`Server is working on http://localhost:${port}`)
