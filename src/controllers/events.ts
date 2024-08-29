@@ -102,3 +102,28 @@ export const getAllEvents = TryCatch(async (req: Request, res: Response, next: N
         resultPerPage
     });
 });
+
+
+
+
+
+
+export const getEventDetails = TryCatch(async (req: Request, res: Response, next: NextFunction) => {
+    const title = req.params.title;
+
+    // Find property by title
+    const event = await EventPost.findOne({ title });
+
+    if (!event) {
+        return next(new ErrorHandler("Event not found", 404));
+    }
+
+    // Populate 'listedBy' field with 'name', 'email', and 'role'
+
+
+    // Respond with property details
+    return res.status(200).json({
+        success: true,
+        event,
+    });
+});

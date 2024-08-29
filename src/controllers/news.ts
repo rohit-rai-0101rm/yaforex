@@ -99,3 +99,25 @@ export const getAllNews = TryCatch(async (req: Request, res: Response, next: Nex
         resultPerPage
     });
 });
+
+
+
+export const getNewsByTitle = TryCatch(async (req: Request, res: Response, next: NextFunction) => {
+    const { title } = req.params;
+
+    if (!title) {
+        return next(new ErrorHandler("Please provide a title to search for", 400));
+    }
+
+    // Find the news post by title (case-insensitive)
+    const newsPost = await NewsPost.findOne({ title });
+
+    if (!newsPost) {
+        return next(new ErrorHandler(`No news post found with the title "${title}"`, 404));
+    }
+
+    res.status(200).json({
+        success: true,
+        newsPost,
+    });
+});

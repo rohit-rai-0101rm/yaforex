@@ -101,3 +101,27 @@ export const getAllGuides = TryCatch(async (req: Request, res: Response, next: N
         resultPerPage
     });
 });
+
+
+
+
+
+export const getGuideDetails = TryCatch(async (req: Request, res: Response, next: NextFunction) => {
+    const title = req.params.title;
+
+    // Find property by title
+    const guide = await GuidePost.findOne({ title });
+
+    if (!guide) {
+        return next(new ErrorHandler("Guide not found", 404));
+    }
+
+    // Populate 'listedBy' field with 'name', 'email', and 'role'
+
+
+    // Respond with property details
+    return res.status(200).json({
+        success: true,
+        guide,
+    });
+});

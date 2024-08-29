@@ -83,3 +83,26 @@ export const getAllCareers = TryCatch(async (req: Request, res: Response, next: 
         resultPerPage
     });
 });
+
+
+
+
+export const getCareerDetails = TryCatch(async (req: Request, res: Response, next: NextFunction) => {
+    const title = req.params.jobTitle;
+
+    // Find property by title
+    const career = await CareerPost.findOne({ title });
+
+    if (!career) {
+        return next(new ErrorHandler("Career not found", 404));
+    }
+
+    // Populate 'listedBy' field with 'name', 'email', and 'role'
+
+
+    // Respond with property details
+    return res.status(200).json({
+        success: true,
+        career,
+    });
+});

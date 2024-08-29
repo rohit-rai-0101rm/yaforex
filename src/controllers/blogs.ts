@@ -98,3 +98,24 @@ export const getAllBlogs = TryCatch(async (req: Request, res: Response, next: Ne
         resultPerPage
     });
 });
+
+
+export const getBlogDetails = TryCatch(async (req: Request, res: Response, next: NextFunction) => {
+    const title = req.params.title;
+
+    // Find property by title
+    const blog = await BlogPost.findOne({ title });
+
+    if (!blog) {
+        return next(new ErrorHandler("Blog not found", 404));
+    }
+
+    // Populate 'listedBy' field with 'name', 'email', and 'role'
+
+
+    // Respond with property details
+    return res.status(200).json({
+        success: true,
+        blog,
+    });
+});

@@ -81,3 +81,25 @@ export const getAllTips = TryCatch(async (req: Request, res: Response, next: Nex
         resultPerPage
     });
 });
+
+
+
+export const getTipDetails = TryCatch(async (req: Request, res: Response, next: NextFunction) => {
+    const title = req.params.title;
+
+    // Find property by title
+    const tip = await Tip.findOne({ title });
+
+    if (!tip) {
+        return next(new ErrorHandler("Tip not found", 404));
+    }
+
+    // Populate 'listedBy' field with 'name', 'email', and 'role'
+
+
+    // Respond with property details
+    return res.status(200).json({
+        success: true,
+        tip,
+    });
+});
