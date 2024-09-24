@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { StringExpressionOperatorReturningBoolean } from "mongoose";
-import { TipType } from "../models/Tips.js";
+
 
 export interface NewUserRequestBody {
     name: string,
@@ -201,5 +201,5 @@ export interface NewTipRequestBody {
         name: string;
         email: string;
     };
-    type: TipType;
+
 }

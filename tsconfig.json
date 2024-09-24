@@ -11,12 +11,13 @@
     "skipLibCheck": true,
     "typeRoots": [
       "./node_modules/@types",
-      "./types"
+      "src/types"
     ],
     "noEmitOnError": false // Add this line
   },
   "include": [
     "src",
-    "types"
+    "src/types",
+    "src/types"
   ]
 }
