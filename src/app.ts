@@ -28,6 +28,7 @@ app.use(express.urlencoded({ limit: '10mb', extended: true }));
 app.use(cookieParser());
 
 app.get("/", (req, res) => {
+    console.log('Received a request on the root endpoint');
     res.send("API Working with /api/v1");
 });
 app.use('/api/v1/auth', authRoutes);

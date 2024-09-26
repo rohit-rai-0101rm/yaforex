@@ -9,6 +9,7 @@ export const requestPhoneVerification = async (req, res) => {
         const verification = await sendVerificationCode(phoneNumber);
         res.status(200).json({ success: true, message: "Verification code sent", verification });
     } catch (error) {
+        console.log(error)
         res.status(500).json({ success: false, message: "Error sending verification code", error });
     }
 };
