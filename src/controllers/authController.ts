@@ -1,6 +1,6 @@
 import { sendVerificationCode, verifyCode } from '../utils/twilio.js';
-
-export const requestPhoneVerification = async (req, res) => {
+import { Request, Response, NextFunction } from 'express';
+export const requestPhoneVerification = async (req: Request<{}>, res: Response, next: NextFunction) => {
     const { phoneNumber } = req.body;
 
     console.log("phoneNumber", phoneNumber)
@@ -14,7 +14,7 @@ export const requestPhoneVerification = async (req, res) => {
     }
 };
 
-export const verifyPhoneNumber = async (req, res) => {
+export const verifyPhoneNumber = async (req: Request<{}>, res: Response) => {
     const { phoneNumber, code } = req.body;
 
     try {
