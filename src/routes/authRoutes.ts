@@ -1,5 +1,5 @@
 import express from 'express';
-import { requestPhoneVerification, verifyPhoneNumber } from '../controllers/authController.js';
+import { getAllUsers, requestPhoneVerification, verifyPhoneNumber } from '../controllers/authController.js';
 
 const router = express.Router();
 
@@ -8,5 +8,8 @@ router.post('/request-verification', requestPhoneVerification);
 
 // Route to verify the code
 router.post('/verify-code', verifyPhoneNumber);
+
+
+router.get('/users', getAllUsers);
 
 export default router;

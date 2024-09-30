@@ -3,7 +3,7 @@ import { Query, Document } from 'mongoose';
 import { QueryStr } from '../types/types.js';
 export const connectDB = (uri: string) => {
     mongoose.connect(uri, {
-        dbName: "YaHomes"
+        dbName: "YaForex"
     }).then(c => console.log(`Db connected to ${c.connection.host}`)).catch((e) => console.log(e))
 }
 
